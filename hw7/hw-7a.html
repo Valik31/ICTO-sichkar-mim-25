@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Великий адронний колайдер VR</title>
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+</head>
+<body>
+  <a-scene background="color: black">
+    <a-camera position="0 1.5 4"></a-camera>
+
+    <a-light type="ambient" color="#888" intensity="3"></a-light>
+    <a-light type="point" position="0 2 2" color="#FFF" intensity="15" decay="0"></a-light>
+
+    <a-entity position="0 1.5 0">
+      
+        <a-torus radius="2" radius-tubular="0.1" material="color: #4CC3D9; transparent: true; opacity: 0.3"></a-torus>
+
+        <a-entity animation="property: rotation; from: 0 0 0; to: 0 0 85.7; dur: 2500; loop: true; easing: linear">
+            <a-sphere position="2 0 0" radius="0.15" color="#FF0000"></a-sphere>
+        </a-entity>
+
+        <a-entity animation="property: rotation; from: 0 0 180; to: 0 0 94.3; dur: 2500; loop: true; easing: linear">
+            <a-sphere position="2 0 0" radius="0.15" color="#0000FF"></a-sphere>
+        </a-entity>
+      
+    </a-entity>
+  </a-scene>
+</body>
+</html>
