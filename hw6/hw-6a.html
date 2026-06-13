@@ -1,0 +1,227 @@
+<html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>AR з A-Frame</title>
+      <script src="../aframe/aframe.min.js"></script>
+      <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+      
+      <style>
+        #ui-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #FFFF00;
+            font-family: sans-serif;
+            font-size: 16px;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+      </style>
+    </head>
+    <body style="margin: 0; overflow: hidden;">
+        
+        <div id="ui-container">Очікування 4-х маркерів...</div>
+
+        <script>
+            let markerVisible = {A: false, B: false, C: false, D: false,};
+            AFRAME.registerComponent('registerevents', {
+            init: function () {
+                let marker = this.el;
+                marker.addEventListener('markerFound', function() {
+                    markerVisible[ marker.id ] = true;
+                }); 
+                  marker.addEventListener('markerLost', function() { 
+                    markerVisible[marker.id] = false; 
+                  });
+                  }
+            });
+
+            let coord = {A: new THREE.Vector3(), B: new THREE.Vector3(), C: new THREE.Vector3(), D: new THREE.Vector3(),};
+            
+            function getArea(p1, p2, p3) {
+                let a = p1.distanceTo(p2);
+                let b = p2.distanceTo(p3);
+                let c = p3.distanceTo(p1);
+                let p = (a + b + c) / 2;
+                let val = p * (p - a) * (p - b) * (p - c);
+                return val > 0 ? Math.sqrt(val) : 0;
+            }
+
+            AFRAME.registerComponent('run',{
+                init: function () {
+                  console.log("Виконується один раз")
+                  A = document.getElementById("A").object3D;
+                  B = document.getElementById("B").object3D;
+                  C = document.getElementById("C").object3D;
+                  D = document.getElementById("D").object3D;
+
+                  AB = document.getElementById("AB").object3D;
+                  AC = document.getElementById("AC").object3D;
+                  AD = document.getElementById("AD").object3D;
+                  BC = document.getElementById("BC").object3D;
+                  BD = document.getElementById("BD").object3D;
+                  CD = document.getElementById("CD").object3D;
+                  
+                  ui = document.getElementById("ui-container");
+
+                  let material = new THREE.MeshLambertMaterial({color:0xFF0000});
+                  let geometry = new THREE.CylinderGeometry(0.05, 0.05, 1, 12);
+                  
+                  geometry.applyMatrix4( new THREE.Matrix4().makeTranslation(0, 0.5, 0 ) );
+                  geometry.applyMatrix4( new THREE.Matrix4().makeRotationX(THREE.MathUtils.degToRad( 90 ) ) );
+                  
+                  cAB = new THREE.Mesh( geometry, material ); AB.add( cAB ); cAB.visible = false;
+                  cAC = new THREE.Mesh( geometry, material ); AC.add( cAC ); cAC.visible = false;
+                  cAD = new THREE.Mesh( geometry, material ); AD.add( cAD ); cAD.visible = false;
+                  cBC = new THREE.Mesh( geometry, material ); BC.add( cBC ); cBC.visible = false;
+                  cBD = new THREE.Mesh( geometry, material ); BD.add( cBD ); cBD.visible = false;
+                  cCD = new THREE.Mesh( geometry, material ); CD.add( cCD ); cCD.visible = false;
+                },
+
+                tick: function () {
+                  A.getWorldPosition(coord['A']);
+                  B.getWorldPosition(coord['B']);
+                  C.getWorldPosition(coord['C']);
+                  D.getWorldPosition(coord['D']);
+                  //console.log(coord);
+
+                  if(!markerVisible["A"]) {
+                    cAB.visible = false;
+                    cAC.visible = false;
+                    cAD.visible = false;
+                  }
+                  if(!markerVisible["B"]) {
+                    cAB.visible = false;
+                    cBC.visible = false;
+                    cBD.visible = false;
+                  }
+                  if(!markerVisible["C"]) {
+                    cAC.visible = false;
+                    cBC.visible = false;
+                    cCD.visible = false;
+                  }
+                  if(!markerVisible["D"]) {
+                    cAD.visible = false;
+                    cBD.visible = false;
+                    cCD.visible = false;
+                  }
+                  if(markerVisible["A"] && markerVisible["B"]) {
+                    let distante = coord["A"].distanceTo(coord["B"]);
+                    // console.log("AB");
+                    AB.lookAt(coord["B"]);
+                    cAB.scale.set(1,1,distante);
+                    cAB.visible = true;
+                  }
+                  if(markerVisible["A"] && markerVisible["C"]) {
+                    let distante = coord["A"].distanceTo(coord["C"]);
+                    // console.log("AC");
+                    AC.lookAt(coord["C"]);
+                    cAC.scale.set(1,1,distante);
+                    cAC.visible = true;
+                  }
+                  if(markerVisible["A"] && markerVisible["D"]) {
+                    let distante = coord["A"].distanceTo(coord["D"]);
+                    // console.log("AD");
+                    AD.lookAt(coord["D"]);
+                    cAD.scale.set(1,1,distante);
+                    cAD.visible = true;
+                  }
+                  if(markerVisible["B"] && markerVisible["C"]) {
+                    let distante = coord["B"].distanceTo(coord["C"]);
+                    // console.log("BC");
+                    BC.lookAt(coord["C"]);
+                    cBC.scale.set(1, 1, distante);
+                    cBC.visible=true;
+                  }
+                  if(markerVisible["B"] && markerVisible["D"]) {
+                    let distante = coord["B"].distanceTo(coord["D"]);
+                    // console.log("BD");
+                    BD.lookAt(coord["D"]);
+                    cBD.scale.set(1, 1, distante);
+                    cBD.visible=true;
+                  }
+                  if(markerVisible["C"] && markerVisible["D"]) {
+                    let distante = coord["C"].distanceTo(coord["D"]);
+                    // console.log("CD");
+                    CD.lookAt(coord["D"]);
+                    cCD.scale.set(1, 1, distante);
+                    cCD.visible=true;
+                  }
+
+                  if(markerVisible["A"] && markerVisible["B"] && markerVisible["C"] && markerVisible["D"]) {
+                    // Периметр
+                    const lenAB = coord["A"].distanceTo(coord["B"]);
+                    const lenBC = coord["B"].distanceTo(coord["C"]);
+                    const lenCD = coord["C"].distanceTo(coord["D"]);
+                    const lenDA = coord["D"].distanceTo(coord["A"]);
+                    const P = lenAB + lenBC + lenCD + lenDA;
+
+                    // Точка перетину діагоналей
+                    let d1 = new THREE.Vector3().subVectors(coord["C"], coord["A"]);
+                    let d2 = new THREE.Vector3().subVectors(coord["D"], coord["B"]);
+                    let B_minus_A = new THREE.Vector3().subVectors(coord["B"], coord["A"]);
+                    
+                    let crossD1D2 = new THREE.Vector3().crossVectors(d1, d2);
+                    let t = 0;
+                    if (crossD1D2.lengthSq() > 0.0001) {
+                        let crossBminusAD2 = new THREE.Vector3().crossVectors(B_minus_A, d2);
+                        t = crossBminusAD2.dot(crossD1D2) / crossD1D2.lengthSq();
+                    }
+                    let O = new THREE.Vector3().copy(d1).multiplyScalar(t).add(coord["A"]);
+
+                    // Площі
+                    let sAOB = getArea(coord["A"], O, coord["B"]);
+                    let sBOC = getArea(coord["B"], O, coord["C"]);
+                    let sCOD = getArea(coord["C"], O, coord["D"]);
+                    let sDOA = getArea(coord["D"], O, coord["A"]);
+
+                    ui.innerHTML = `
+                        <strong>Периметр:</strong> ${P.toFixed(2)}<br>
+                        <strong>S(AOB):</strong> ${sAOB.toFixed(3)}<br>
+                        <strong>S(BOC):</strong> ${sBOC.toFixed(3)}<br>
+                        <strong>S(COD):</strong> ${sCOD.toFixed(3)}<br>
+                        <strong>S(DOA):</strong> ${sDOA.toFixed(3)}
+                    `;
+                  } else {
+                    if(ui) ui.innerHTML = 'Очікування 4-х маркерів...';
+                  }
+                }
+
+            });
+        </script>
+
+      <a-scene vr-mode-ui = "enabled: false" renderer = "logarithmicDeptBuffer: true" embedded 
+          arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+
+        <a-marker type="pattern" url="pattern-letterA.patt" id="A" registerevents> 
+          <a-sphere color="red" radius="0.1"></a-torus>
+          <a-entity id="AB"></a-entity>
+          <a-entity id="AD"></a-entity>
+          <a-entity id="AC"></a-entity>
+        </a-marker>
+
+        <a-marker type="pattern" url="pattern-letterB.patt" id="B" registerevents> 
+          <a-sphere color="red" radius="0.1"></a-torus>
+          <a-entity id="BC"></a-entity>
+          <a-entity id="BD"></a-entity>
+        </a-marker>
+
+        <a-marker type="pattern" url="pattern-letterC.patt" id="C" registerevents> 
+          <a-sphere color="red" radius="0.1"></a-torus>
+          <a-entity id="CD"></a-entity>
+        </a-marker>
+
+        <a-marker type="pattern" url="pattern-letterD.patt" id="D" registerevents> 
+          <a-sphere color="red" radius="0.1"></a-torus>
+        </a-marker>
+
+        <a-entity camera></a-entity>
+        <a-entity run></a-entity>
+
+      </a-scene>
+    </body>
+</html>
