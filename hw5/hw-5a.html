@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Сонячна система AR</title>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    </head>
+<body>
+    <script src="planet.js"></script>
+
+    <a-scene mindar-image="imageTargetSrc:targets.mind;" color-space="sRGB" renderer="colorManagement: true, 
+    physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        
+        <a-entity main></a-entity>
+        
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+                
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-entity scale = "0.0055 0.0065 0.0065">
+                <a-sphere radius="20.510" src="../images/solar_system/sun.jpg" 
+                    planet="dist: 0; mass: 1.989e30; name: Sun"></a-sphere>
+
+                <a-sphere radius="2.4397" src="../images/solar_system/mercury.jpg" 
+                    planet="dist: 57.91e9; mass: 3.3011e23; T: 87.9691; name: Mercury"></a-sphere>  
+                    
+                <a-sphere radius="6.0518" src="../images/solar_system/venus.jpg" 
+                    planet="dist: 108.21e9; mass: 4.86731e24; T: 224.701; name: Venus"></a-sphere>  
+
+                <a-sphere radius="6.371" src="../images/solar_system/earth.jpg" 
+                    planet="dist: 149.598e9; mass: 5.97217e24; T: 365.256363004; name: Earth"></a-sphere>  
+
+                <a-sphere radius="3.3895" src="../images/solar_system/mars.jpg" 
+                    planet="dist: 227.939366e9; mass: 6.4171e23; T: 686.980; name: Mars"></a-sphere> 
+
+                <a-sphere radius="69.886" src="../images/solar_system/jupiter.jpg" 
+                    planet="dist: 778.5e9; mass: 1.898e27; T: 4332.59; name: Jupiter"></a-sphere> 
+
+                <a-sphere radius="58.232" src="../images/solar_system/saturn.jpg" 
+                    planet="dist: 1433.53e9; mass: 5.68317e26; T: 10755.70; name: Saturn"></a-sphere> 
+
+                <a-sphere radius="25.362" src="../images/solar_system/uranus.jpg" 
+                    planet="dist: 2870.972e9; mass: 8.681e25; T: 30688.5; name: Uranus"></a-sphere> 
+
+                <a-sphere radius="24.622" src="../images/solar_system/neptune.jpg" 
+                    planet="dist: 4500e9; mass: 1.024092e26; T: 60190; name: Neptune"></a-sphere>
+            </a-entity>
+        </a-entity>
+        
+    </a-scene>
+</body>
+</html>
