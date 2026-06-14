@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Завдання: AR Маска для обличчя</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.151.3/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.151.3/examples/jsm/",
+            "mindar-face-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-three.prod.js"
+        }
+    }
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #layer-blocker {
+            position: absolute;
+            inset: 0;
+            background: rgba(18, 20, 26, 0.96);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        #action-trigger {
+            padding: 12px 30px;
+            background: #232731;
+            color: #f1f5f9;
+            border: 1px solid #3e4756;
+            border-radius: 4px;
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        #action-trigger:hover {
+            background: #2d3341;
+        }
+        #canvas-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="layer-blocker">
+        <button id="action-trigger">Увімкнути AR-маску</button>
+    </div>
+    
+    <div id="canvas-wrapper"></div>
+    
+    <script src="./week11.js" type="module"></script>
+</body>
+</html>
